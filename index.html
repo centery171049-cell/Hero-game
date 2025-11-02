@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+
+<html lang="th">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>เกมบัญชีฮีโร่ ฮาๆ</title>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- Firebase SDK -->
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+<header>
+
+<h1>เกมบัญชีฮีโร่ ฮาๆ</h1>
+
+<div class="hud">
+
+<div class="panel">ทอง 🪙 <span id="gold">60</span></div>
+
+<div class="panel">ดาบ: <span id="buffs">ไม่มี</span></div>
+
+<div class="panel">รอบบอส: <span id="bossStage">1</span></div>
+
+</div>
+
+</header>
+
+<canvas id="c" width="600" height="240"></canvas>
+
+<div class="panel">
+
+<div><strong>HP ฮีโร่</strong>
+
+<div class="hpbar"><div id="hpHeroBar" class="hpfill" style="background:#10b981;width:100%"></div><div id="hpHeroText" class="hptext">100 / 100</div></div>
+
+</div>
+
+<div style="margin-top:6px"><strong>HP บอส</strong>
+
+<div class="hpbar"><div id="hpBossBar" class="hpfill" style="background:#ef4444;width:100%"></div><div id="hpBossText" class="hptext">0 / 0</div></div>
+
+</div>
+
+</div>
+
+<div style="display:flex;justify-content:space-between;margin-top:10px">
+
+<button id="startFight">เริ่มสู้บอส</button>
+
+<button id="endFight">ยอมแพ้</button>
+
+</div>
+
+<div class="panel question" id="questionPanel" style="display:none">
+
+<div id="qText">-</div>
+
+<div id="qChoices"></div>
+
+<div style="margin-top:8px;display:flex;gap:6px;justify-content:center">
+
+<button id="answerBtn" class="btn-small">ตอบ</button>
+
+<button id="skipBtn" class="btn-small">ข้าม</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<h3>ร้านค้า</h3>
+
+<div class="shop-item"><div>ยา +50 HP (30)</div><button data-item="potion" class="btn-small">ซื้อ</button></div>
+
+<div class="shop-item"><div>ดาบหนัก โจมตี 25 (80)</div><button data-item="sword" class="btn-small">ซื้อ</button></div>
+
+</div>
+
+<div class="log" id="log"></div>
+
+<div class="panel">
+
+<h3>Leaderboard 🏆</h3>
+
+<div id="leaderboard">-</div>
+
+</div>
+
+<div id="victory" class="victory">Victory! 🎆</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
