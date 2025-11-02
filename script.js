@@ -1,30 +1,4 @@
-// 1️⃣ ใส่ Firebase Config ของคุณ
-
-const firebaseConfig = {
-
-  apiKey: "AIzaSyC4a9DrCeSN_HQFIHXWJhnzN4Jn376CdIc",
-
-  authDomain: "hero-4ebbe.firebaseapp.com",
-
-  databaseURL: "https://hero-4ebbe-default-rtdb.asia-southeast1.firebasedatabase.app",
-
-  projectId: "hero-4ebbe",
-
-  storageBucket: "hero-4ebbe.firebasestorage.app",
-
-  messagingSenderId: "868857385644",
-
-  appId: "1:868857385644:web:d5366bee7f5d7b11e60509",
-
-  measurementId: "G-2DE96HJN7Z"
-
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.database();
-
-// 2️⃣ ชื่อผู้เล่น
+// ================= Player Name =================
 
 let playerName = "";
 
@@ -36,11 +10,11 @@ while(!playerName){
 
 }
 
-// 3️⃣ สถานะเกม
+// ================= Game State =================
 
 const state={gold:60,hp:100,maxhp:100,bossStage:1,bossHP:0,bossMax:0,buffs:{sword:0},inFight:false,log:[],timeStart:0};
 
-// 4️⃣ อ้างอิง HTML
+// ================= DOM =================
 
 const goldEl=document.getElementById('gold'),
 
@@ -70,49 +44,63 @@ const goldEl=document.getElementById('gold'),
 
       leaderboardEl=document.getElementById('leaderboard');
 
-// 5️⃣ คำถามบัญชีเพิ่ม
+// ================= Firebase =================
 
-const questions=[
+const firebaseConfig = {
 
-  {q:'งบดุลประกอบด้วย?',choices:['สินทรัพย์/หนี้สิน','รายได้/ค่าใช้จ่าย','กระแสเงินสด'],a:0,diff:'easy'},
+  apiKey: "AIzaSyC4a9DrCeSN_HQFIHXWJhnzN4Jn376CdIc",
 
-  {q:'ค่าเสื่อมสะท้อน?',choices:['การสูญเสียเงินสด','กระจายต้นทุน','รายได้'],a:1,diff:'medium'},
+  authDomain: "hero-4ebbe.firebaseapp.com",
 
-  {q:'บัญชีทุนแสดง?',choices:['สิทธิของเจ้าของ','หนี้ภายนอก','สินค้า'],a:0,diff:'hard'},
+  databaseURL: "https://hero-4ebbe-default-rtdb.asia-southeast1.firebasedatabase.app",
 
-  {q:'รายการค่าใช้จ่ายใดไม่ใช่ค่าใช้จ่ายในการดำเนินงาน?',choices:['ค่าโฆษณา','ค่าดอกเบี้ยเงินกู้','เงินเดือนพนักงาน'],a:1,diff:'easy'},
+  projectId: "hero-4ebbe",
 
-  {q:'ต้นทุนคงที่คืออะไร?',choices:['ต้นทุนที่ไม่เปลี่ยนตามปริมาณ','ต้นทุนต่อหน่วย','ต้นทุนผันแปร'],a:0,diff:'medium'},
+  storageBucket: "hero-4ebbe.firebasestorage.app",
 
-  {q:'งบกำไรขาดทุนแสดง?',choices:['รายได้-ค่าใช้จ่าย','สินทรัพย์','หนี้สิน'],a:0,diff:'easy'},
+  messagingSenderId: "868857385644",
 
-  {q:'บัญชีลูกหนี้คือ?',choices:['เงินที่ลูกหนี้ยังไม่ได้จ่าย','สินทรัพย์ถาวร','ค่าใช้จ่าย'],a:0,diff:'medium'},
+  appId: "1:868857385644:web:d5366bee7f5d7b11e60509",
 
-  {q:'รายการใดเป็นค่าใช้จ่ายผันแปร?',choices:['ค่าแรงรายชั่วโมง','ค่าเช่าคงที่','ค่าเครื่องจักร'],a:0,diff:'hard'}
+  measurementId: "G-2DE96HJN7Z"
 
-];
+};
 
-// 6️⃣ ฟังก์ชัน gold ตามความยาก
+firebase.initializeApp(firebaseConfig);
 
-function goldByDiff(d){if(d==='easy')return 20;if(d==='medium')return 40;return 60;}
+const dbRef = firebase.database().ref('leaderboard');
 
-// 7️⃣ ฟังก์ชัน log
+// ================= Utility =================
 
-function addLog(t){state.log.unshift(t);if(state.log.length>50)state.log.pop();renderLog();}
+function getHPColor(hp,max){
 
-function renderLog(){logEl.innerHTML=state.log.map(s=>'<div>'+s+'</div>').join('');}
+  const percent = hp/max;
 
-// 8️⃣ อัปเดต UI
+  if(percent>0.6) return '#22c55e';  // เขียว
+
+  if(percent>0.3) return '#facc15';  // เหลือง
+
+  return '#ef4444';                  // แดง
+
+}
 
 function save(){
 
   goldEl.textContent=state.gold;
 
+  const heroColor=getHPColor(state.hp,state.maxhp);
+
+  const bossColor=getHPColor(state.bossHP,state.bossMax||1);
+
   hpHeroBar.style.width=(state.hp/state.maxhp*100)+'%';
+
+  hpHeroBar.style.background=heroColor;
 
   hpHeroText.textContent=state.hp+' / '+state.maxhp;
 
   hpBossBar.style.width=(state.bossMax?state.bossHP/state.bossMax*100:0)+'%';
+
+  hpBossBar.style.background=bossColor;
 
   hpBossText.textContent=state.bossHP+' / '+state.bossMax;
 
@@ -124,7 +112,51 @@ function save(){
 
 }
 
-// 9️⃣ วาดตัวละคร
+function addLog(t){state.log.unshift(t);if(state.log.length>50)state.log.pop();renderLog();}
+
+function renderLog(){logEl.innerHTML=state.log.map(s=>'<div>'+s+'</div>').join('');}
+
+// ================= Questions =================
+
+const allQuestions=[
+
+  {q:'งบดุลประกอบด้วย?',choices:['สินทรัพย์/หนี้สิน','รายได้/ค่าใช้จ่าย','กระแสเงินสด'],a:0,diff:'easy'},
+
+  {q:'ค่าเสื่อมสะท้อน?',choices:['การสูญเสียเงินสด','กระจายต้นทุน','รายได้'],a:1,diff:'medium'},
+
+  {q:'บัญชีทุนแสดง?',choices:['สิทธิของเจ้าของ','หนี้ภายนอก','สินค้า'],a:0,diff:'hard'},
+
+  {q:'รายการค่าใช้จ่ายใดไม่ใช่ค่าใช้จ่ายในการดำเนินงาน?',choices:['ค่าโฆษณา','ค่าดอกเบี้ยเงินกู้','เงินเดือนพนักงาน'],a:1,diff:'easy'},
+
+  {q:'ต้นทุนคงที่คืออะไร?',choices:['ต้นทุนที่ไม่เปลี่ยนตามปริมาณ','ต้นทุนต่อหน่วย','ต้นทุนผันแปร'],a:0,diff:'medium'},
+
+  {q:'งบกำไรขาดทุนใช้แสดงอะไร?',choices:['รายได้และค่าใช้จ่าย','สินทรัพย์','หนี้สิน'],a:0,diff:'easy'},
+
+  {q:'เอกสารใดใช้บันทึกรายการประจำวัน?',choices:['สมุดรายวัน','งบทดลอง','งบดุล'],a:0,diff:'medium'},
+
+  {q:'บัญชีรายได้อยู่ฝั่งไหนของงบดุล?',choices:['ฝั่งขวา','ฝั่งซ้าย','ไม่มี'],a:0,diff:'hard'}
+
+];
+
+let remainingQuestions = [...allQuestions];
+
+function getQuestion(){
+
+  if(remainingQuestions.length===0) remainingQuestions=[...allQuestions];
+
+  const idx=Math.floor(Math.random()*remainingQuestions.length);
+
+  const q=remainingQuestions[idx];
+
+  remainingQuestions.splice(idx,1);
+
+  return q;
+
+}
+
+function goldByDiff(d){if(d==='easy')return 20;if(d==='medium')return 40;return 60;}
+
+// ================= Canvas =================
 
 function drawScene(heroShake=0,bossShake=0){
 
@@ -152,7 +184,7 @@ function drawScene(heroShake=0,bossShake=0){
 
   ctx.fillStyle='#fb7185';ctx.beginPath();ctx.ellipse(0,0,40,35,0,0,Math.PI*2);ctx.fill();
 
-  ctx.fillStyle='#fff';ctx.beginPath().arc(0,-30,25,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,-30,25,0,Math.PI*2);ctx.fill();
 
   ctx.fillStyle='#111';ctx.fillRect(-10,-36,6,6);ctx.fillRect(4,-36,6,6);
 
@@ -161,8 +193,6 @@ function drawScene(heroShake=0,bossShake=0){
   ctx.restore();
 
 }
-
-// 10️⃣ Animate Attack
 
 function animateAttack(type){
 
@@ -182,7 +212,7 @@ function animateAttack(type){
 
 }
 
-// 11️⃣ Boss / Question
+// ================= Game Logic =================
 
 let currentQuestion=null;
 
@@ -204,7 +234,7 @@ function newBoss(){
 
 function showQuestion(){
 
-  currentQuestion=questions[Math.floor(Math.random()*questions.length)];
+  currentQuestion=getQuestion();
 
   qPanel.style.display='block';
 
@@ -214,13 +244,17 @@ function showQuestion(){
 
 }
 
-// 12️⃣ ตอบ / ข้าม
+// ================= Events =================
 
 document.getElementById('answerBtn').onclick=()=>{
 
-  const sel=[...document.getElementsByName('ans')].find(r=>r.checked);if(!sel)return alert("เลือกคำตอบก่อน!");
+  const sel=[...document.getElementsByName('ans')].find(r=>r.checked);
 
-  const idx=Number(sel.value);qPanel.style.display='none';
+  if(!sel) return alert("เลือกคำตอบก่อน!");
+
+  const idx=Number(sel.value);
+
+  qPanel.style.display='none';
 
   if(idx===currentQuestion.a){
 
@@ -270,8 +304,6 @@ document.getElementById('skipBtn').onclick=()=>{
 
 };
 
-// 13️⃣ ร้านค้า
-
 document.querySelectorAll('[data-item]').forEach(b=>b.onclick=()=>{
 
   const it=b.dataset.item;
@@ -284,7 +316,7 @@ document.querySelectorAll('[data-item]').forEach(b=>b.onclick=()=>{
 
 });
 
-// 14️⃣ Victory / Leaderboard ออนไลน์
+// ================= Victory / GameOver =================
 
 function victory(){
 
@@ -296,41 +328,15 @@ function victory(){
 
   const elapsed = Math.round((Date.now() - state.timeStart)/1000);
 
-  
+  dbRef.push({name: playerName, time: elapsed, gold: state.gold});
 
-  // บันทึก Firebase
-
-  db.ref("leaderboard").push({name: playerName, time: elapsed}).then(()=>{
-
-    loadLeaderboard();
-
-  });
+  fetchLeaderboard();
 
   setTimeout(()=>{document.getElementById('victory').style.display='none';},2000);
 
   save();
 
 }
-
-// 15️⃣ โหลด Leaderboard
-
-function loadLeaderboard(){
-
-  db.ref("leaderboard").once("value").then(snapshot=>{
-
-    const data = snapshot.val();
-
-    if(!data){ leaderboardEl.innerHTML = '-'; return; }
-
-    const arr = Object.values(data).sort((a,b)=>a.time-b.time);
-
-    leaderboardEl.innerHTML = arr.map((p,i)=>`${i+1}. ${p.name} - ${p.time}s`).join('<br>');
-
-  });
-
-}
-
-// 16️⃣ Game Over
 
 function gameOver(){
 
@@ -346,6 +352,40 @@ function gameOver(){
 
 }
 
-// 17️⃣ ปุ่มเริ่ม/ยอมแพ้
+// ================= Leaderboard =================
 
-document.getElementById('startFight').onclick=()=>{
+function renderLeaderboard(data){
+
+  if(!data || data.length===0){leaderboardEl.innerHTML='-'; return;}
+
+  leaderboardEl.innerHTML = data.map((p,i)=>`${i+1}. ${p.name} - ${p.time}s`).join('<br>');
+
+}
+
+function fetchLeaderboard(){
+
+  dbRef.orderByChild('time').limitToFirst(10).once('value',snapshot=>{
+
+    const data = snapshot.val();
+
+    if(!data){ renderLeaderboard([]); return; }
+
+    const arr = Object.values(data).sort((a,b)=>a.time-b.time);
+
+    renderLeaderboard(arr);
+
+  });
+
+}
+
+// ================= Buttons =================
+
+document.getElementById('startFight').onclick=()=>{if(!state.inFight)newBoss();}
+
+document.getElementById('endFight').onclick=()=>{if(state.inFight){state.inFight=false;addLog('ยอมแพ้');save();}};
+
+// ================= Loop =================
+
+function loop(){drawScene();requestAnimationFrame(loop);}loop();
+
+save();fetchLeaderboard();
