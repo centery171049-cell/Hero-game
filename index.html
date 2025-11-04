@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>⚡ เกมบัญชีฮีโร่เวทมนตร์ ⚡</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <header><h1>⚡ เกมบัญชีฮีโร่เวทมนตร์ ⚡</h1></header>
+
+    <div class="hud">
+      <div class="panel">ทอง: <span id="gold">0</span></div>
+      <div class="panel">HP ฮีโร่:
+        <div class="hpbar"><div id="hpHeroBar" class="hpfill"></div><div id="hpHeroText" class="hptext">100/100</div></div>
+      </div>
+      <div class="panel">HP บอส:
+        <div class="hpbar"><div id="hpBossBar" class="hpfill"></div><div id="hpBossText" class="hptext">0/0</div></div>
+      </div>
+      <div class="panel">บัฟ: <span id="buffs">ไม่มี</span></div>
+      <div class="panel">ด่าน: <span id="bossStage">1</span></div>
+    </div>
+
+    <canvas id="c" width="320" height="180"></canvas>
+
+    <div class="hud">
+      <button id="startFight">เริ่มต่อสู้</button>
+      <button id="endFight">ยอมแพ้</button>
+    </div>
+
+    <div id="shop" class="panel">
+      <h3>🏪 ร้านค้า</h3>
+      <div class="shop-item">💊 ยาฟื้น HP (+50HP) - 30 ทอง <button class="btn-small" data-item="potion">ซื้อ</button></div>
+      <div class="shop-item">🗡️ ดาบเวท (+โจมตีแรงครั้งหน้า) - 80 ทอง <button class="btn-small" data-item="sword">ซื้อ</button></div>
+    </div>
+
+    <div class="question" id="questionPanel" style="display:none;">
+      <div id="qText"></div>
+      <div id="qChoices"></div>
+      <button id="answerBtn">ตอบ</button>
+      <button id="skipBtn">ข้าม (-20 HP)</button>
+    </div>
+
+    <div class="log" id="log"></div>
+    <div id="leaderboard"></div>
+    <div class="victory" id="victory">🎉 ชนะบอส! 🎉</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
